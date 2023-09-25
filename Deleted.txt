@@ -1,0 +1,41 @@
+
+Controller: setDistribution
+Was eaiser the code of taking just the day, modify it and update it
+Maybe in this deleted way more efficient. Idk. Less Data quieried but Complex code. Complex Query. 
+
+await session.withTransaction(async () => {
+            
+            try{
+
+                for(let i=0;i<distribution.length;i++){
+                    
+                    //Gettin actual goal
+                    const goal = await Plans.find({$and:[{_id:groupId},{"days.name":dayName},]},{_id:0,[`days.$`]:1})
+                    console.log(goal.keys)
+
+                    //Set Percentage Value
+                    const action = await Plans.updateOne(
+                        {$and:[{_id:groupId},{"days.name":dayName}]},
+                        {$set:{[`days.$.meals.${i}.percentage`]:distribution[i]}},//,
+                        //[`days.$.meals.${i}.goal.p`]:distribution[i]*}},
+                        {session}
+                    )
+                    if (!action.acknowledged) throw new Error("Operacion cancelada.")
+                    }
+
+                    //Set new goal value
+                    //const action2=await Plans.updateOne({
+
+                    //})
+                
+                await session.commitTransaction()
+                res.status(200).send("good")
+
+            }catch(err){
+                res.status(500).send("Somethign Wrong: " + err) 
+                await session.abortTransaction();
+
+            }finally{
+                await session.endSession()}
+
+        })

@@ -1,0 +1,14 @@
+CONNECTION FROM SHELL
+mongosh "mongodb+srv://diet-assist-db.lskotyy.mongodb.net/" --apiVersion 1 --username mateolr20
+
+NODE 
+mongodb+srv://<username>:<password>@diet-assist-db.lskotyy.mongodb.net/?retryWrites=true&w=majority
+
+IMPORT/EXPORTS ...ETC (not commands from mongosh. use in normal shell)
+import:
+mongoimport --uri mongodb+srv://Mateo_Leandri:<PASSWORD>@diet-assist-db.lskotyy.mongodb.net/<DATABASE> --collection <COLLECTION> --type <FILETYPE> --file <FILENAME>
+
+export: 
+mongoexport --uri mongodb+srv://Mateo_Leandri:<PASSWORD>@diet-assist-db.lskotyy.mongodb.net/<DATABASE> --collection <COLLECTION> --type <FILETYPE> --out <FILENAME>
+
+https://cloud.mongodb.com/v2/63e44a73a9156678722966c5#/clusters/commandLineTools/DIET-ASSIST-DB

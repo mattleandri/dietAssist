@@ -16,6 +16,7 @@ const foodSchema = new mongoose.Schema({
 
 const mealSchema = new mongoose.Schema({
     name:String,
+    percentage:Decimal128,
     goal:goalSchema,
     foods:[foodSchema]
 },
@@ -32,7 +33,7 @@ const daySchema = new mongoose.Schema({
 },
 {_id:false})
 
-const groupSchema = new mongoose.Schema({
+const plansSchema = new mongoose.Schema({
     _id: String,
     name: String,
     goal: goalSchema,
@@ -44,8 +45,4 @@ const groupSchema = new mongoose.Schema({
 
 
 
-export const Group = mongoose.model('plans',groupSchema)
-//export const Goal = mongoose.model('plans',goalSchema)
-//export const Day = mongoose.model('plans',daySchema)
-//export const Meal = mongoose.model('plans',mealSchema)
-
+export const Plans = mongoose.model('plans',plansSchema)

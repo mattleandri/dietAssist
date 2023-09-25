@@ -1,0 +1,22 @@
+REPLICA SETS
+Copias de la DB. Toda DB tiene un Nodo (set) Primario y todos los demas son secundarios.
+Por def el primario se realizan las escrituras y lecturas y luego (en escr) se copian a los otros nodos de forma asincrona
+Todo puede configurarse. Ver la Doc Oficial esta muy buena
+
+SHARDERS 
+Escalado horizontal. Cada Sharder en una instancia de Un servidor mongod.
+Toda la Data se divide en los distintos Sharders. 
+mongos (router) se encarga de seleccionar el Sharder Adecuado. Ver en Doc KEYS. 
+ 
+CLUSTER
+Termino general que hace referencia a la agrupacion de todas las instancias
+donde se encuentran los Sets y/o Sharders
+
+
+1- I dont know why if i want to use ` ` in a mongoose operator i have to put []
+ex: {$set:{[`days.$.meals.${i}.percentage`]:distribution[i]}}
+
+2- Para usar Transacciones (atomicidad en muchad operacioens) debo tener al menos dos sets
+Puedo obvio crearlos para seguir trabajando localmente pero de momento usare Atlas que me ofrece un Cluster con 3 sets Replicas
+
+3- Para que funciones la Transaccion DEBO ENVIAR COMO TERCER ARGUMENTO {session} 

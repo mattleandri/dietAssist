@@ -1,0 +1,20 @@
+1  Would be interesting goal values from meals where "connected" to percentage
+to update them automatically. -> multiplies perc * day.goal or plan.goal if first was nos specified ($exists:false)
+_
+
+
+2   Make Food DB with at least 3 examples of each macro
+    Add Post to add food at meal
+
+3 Make Visual with React and fully undesrstand how them get connected
+
+
+
+
+
+
+// IMPORTANTS 
+1- -DONE- (answer: with transactions) Como hago que para la distribiution o se hace TODO (se escribe cada valor de percentage y se calculan los nuevos
+valores de goal) o Se cancela todo. Como hago eso?
+
+2- Leer acerca de Scope. Donde y como se alamacenan las variables. Funciones anidadas. etc

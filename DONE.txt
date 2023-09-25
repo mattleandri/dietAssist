@@ -1,0 +1,5 @@
+18/09
+    -Subi Repo a GitHub
+    -Modifique la DB
+    -Cree las rutas NewDay, AddDef,setDistribution
+    
