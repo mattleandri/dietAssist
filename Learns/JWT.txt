@@ -1,0 +1,27 @@
+Hay 2 modos de crear autenticaciones:
+SESION: Se guarda en el servidor la sension(?) del usuario. Desventajas. Server deja de ser Statless. Debo guardar datos.
+
+TOKEN: Al inicar el usurio le envio un token que contiene :
+    Header: Cotiene generalmente: el tipo de token y el algoritmo usado
+    Payload: Aqui estaran las declaraciones que definamos. Ej fecha de creacion,exp , el id del usuario, etc
+    Signature: Esta formado por la encriptacion el algun algor elegito de una via (ej: HMAC SHA256) (no descifrable) de:
+        (base64UrlEncode(header) + "."      +         base64UrlEncode(payload),     +       secretWord)
+
+        La razon de que en la Signature se encuentren el Headre y el Payload es asegurarse que ninuno de estos ha sido alterados
+
+        
+
+
+    Finalmente el Token queda conformado por : Header(Base64Url Encode)"." + Payload(Base64Url Encode) "."
+
+__________________________
+
+El tipo de Token mas usado es JWT (Json Web Token)
+El JWT es enviado al cliente si su login fue correcto. Este lo almacenara en LocalStorage? o SessionStorage? Como???? <- ver
+A la hora que el cliente desea realizar una peticion lo envia en el header Authorization. Asi: 
+    
+    Authorization: Bearer <token>
+
+
+
+

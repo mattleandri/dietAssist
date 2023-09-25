@@ -2,8 +2,18 @@ import express from 'express';
 import mongoose from 'mongoose'
 import cors from 'cors';
 import 'dotenv/config.js'
+
+//Routes
 import createPlanRouter from './routes/createPlan.js';
 import verPacientesRouter from './routes/verPacientes.js'
+import authRouter from './routes/auth.js';
+import serviciosRouter from './routes/servicios.js';
+
+
+//Helpers
+import validJWT from './helpers/validJWT.js';
+
+
 
 const app = express()
 const PORT = process.env.PORT || 3000;
@@ -16,8 +26,11 @@ app.set('view engine', 'ejs'); //To use ejs files
 app.use(cors());
 
 app.use(express.json())
+app.use("/auth",authRouter)
+app.use('/servicios',serviciosRouter)
 app.use("/createPlan",createPlanRouter)
 app.use("/verPacientes",verPacientesRouter)
+
 
 
 async function main() {

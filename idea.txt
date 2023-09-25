@@ -1,0 +1,3 @@
+Si se accede a los paths como /crearPlan sin estar logeado (sin JWT) =>
+se redirigira a un path de /"knowDietAssist/crearPlan donde se muestra una pagina 
+de presentacion interativa con la opcion de logearse
