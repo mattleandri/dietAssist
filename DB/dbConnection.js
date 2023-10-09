@@ -4,7 +4,7 @@ import mongoose from "mongoose";
 import { plansSchema } from "../schemas/groups.js";
 import { userSchema } from "../schemas/users.js";
 import { patientSchema } from "../schemas/patients.js";
-
+import { alimentoSchema } from "../schemas/alimentos.js";
 
 //async function dbConntection(){
 
@@ -25,6 +25,10 @@ import { patientSchema } from "../schemas/patients.js";
         useUnifiedTopology: true,
     })
 
+    alimentosDB.model('carbohidratos',alimentoSchema)
+    alimentosDB.model('proteinas',alimentoSchema)
+    alimentosDB.model('verduras',alimentoSchema)
+    
     // /return {dietAssistDB,alimentosDB}
 //}
 

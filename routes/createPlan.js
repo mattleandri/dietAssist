@@ -1,3 +1,4 @@
+import { getAlimentosByName } from '../controllers/common/getAlimentos.js'
 import {showCreatePlan,createGroup,newDay, addDefMeals,setDistribution} from '../controllers/createPlan.js'
 import express from 'express'
 
@@ -8,5 +9,8 @@ createPlanRouter.post('/newGroup',createGroup)  // Posiblemente solo me quede co
 createPlanRouter.post('/newDay',newDay)
 createPlanRouter.post('/addDefMeals',addDefMeals)
 createPlanRouter.post('/setDistribution',setDistribution)
+
+
+createPlanRouter.get('/getAlimentos',getAlimentosByName)
 
 export default createPlanRouter;
