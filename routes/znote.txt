@@ -1,2 +1,0 @@
-Routes are actually part of the Controller in the MVC model but is good to separate them 
-in a special folder

@@ -1,8 +1,10 @@
 import {Schema, model} from "mongoose"
 
-const User = new Schema({
+const userSchema = new Schema({
     username:String,
     password:String
 })
 
-export const Users =model('users',User)
+export {userSchema}
+
+//export const Users = dietAssitDB.model('users',User)

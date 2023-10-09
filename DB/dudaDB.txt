@@ -1,0 +1,11 @@
+La conexion a las DB quedo muy rara.
+1. En que momento se ejecuta dbConnetion? imagino que cuando lo solicita el primer controlador importado desde app.js
+2. Por que si implemento la funcion dbConnetion no funciona? No estaria haciendo lo mismo? 
+    Al importar el modulo se ejecutara dbConnection.js es decir se declarara y EJECUTARA la funcion que retornara las variables
+    para luego retornalas. Entonces. Por que asi funciona?
+    Y creo que deberia meterlo en la funcion para llamarlo desde el main y poder manejar los posibles errores.
+
+... como se hace todo esto correctamente? Tema ordenes de ejecucion/ importacion ... etc
+
+El codigo esta funcionado de la forma que se ha escrito. Pero me dejo muchas dudas y no creo realmente
+que esta sea la forma correcta de hacerlo.

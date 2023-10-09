@@ -1,0 +1,74 @@
+swagger-jsdoc es la libreria que me permitiria automatiza el proceso de crear la Doc a partir de mi codigo
+
+    https://www.npmjs.com/package/swagger-jsdoc
+    https://github.com/Surnet/swagger-jsdoc/blob/v7/docs/FIRST-STEPS.md
+
+swagger-ui-express es libreria que me permitira montar facilmente el endpoint para visualizar la Doc
+    https://www.npmjs.com/package/swagger-ui-express
+
+OpenAPI es la especifiacion estadarizada para documentar APIs REST que utilizaremos 
+    https://swagger.io/specification/
+    https://swagger.io/docs/specification/paths-and-operations/
+
+YAML : https://www.youtube.com/watch?v=OybmIqMxDUc
+
+______________________
+
+
+
+Entendiendo swagger-jsdoc
+
+1. creo mi archivo con las configuraciones generales de la API:
+
+        import swaggerJsdoc from 'swagger-jsdoc';
+
+        const options = {
+        definition: {
+            openapi: '3.0.0',
+            info: {
+            title: 'Hello World',
+            version: '1.0.0',
+            },
+        },
+        apis: ['./src/routes*.js'],
+        };
+
+        const openapiSpecification = await swaggerJsdoc(options);
+
+    !!! A la hora de especificar la ruta para las apis tuve que especificar el path completo. 
+    Para ello use : 
+        import { fileURLToPath } from 'url';
+        import { dirname,join } from 'path';
+
+        const ubicacion = dirname(fileURLToPath(import.meta.url))
+        apis: [`${join(ubicacion,'../routes/*.js')}`],
+
+
+2. creo un middleware que ejecute el endpoint que creare con swagger-ui -express
+
+    import swaggerUi from 'swagger-ui-express'
+    app.use("/api-doc",swaggerUi.serve,swaggerUi.setup(openApiSpecification))
+
+    siendo openApiSpecification el archivo creado con swaggerJsdoc
+
+3. Agrego en las rutas las doc. Para ello abro comentario con /** y uso @swagger (o @openapi) y escribo en formato YAML la doc. Ej:
+
+        /**
+        * @swagger
+        *
+        * /login:
+        *   post:
+        *     produces:
+        *       - application/json
+        *     parameters:
+        *       - name: username
+        *         in: formData
+        *         required: true
+        *         type: string
+        *       - name: password
+        *         in: formData
+        *         required: true
+        *         type: string
+        */
+
+        https://editor.swagger.io/

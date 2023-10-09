@@ -40,9 +40,6 @@ const plansSchema = new mongoose.Schema({
     days: [daySchema]
 })
 
+export {plansSchema}
 
-
-
-
-
-export const Plans = mongoose.model('plans',plansSchema)
+//export const Plans = dietAssitDB.model('plans',plansSchema)

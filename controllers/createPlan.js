@@ -1,7 +1,9 @@
 import { Decimal128 } from "bson"
-import { Plans } from "../schemas/groups.js"
+//import { Plans } from "../schemas/.js"
 import mongoose, { mongo } from "mongoose"
+import { dietAssistDB } from "../DB/dbConnection.js"
 
+const Plans = dietAssistDB.model('plans')
 
 export function showCreatePlan(req,res) {
 
