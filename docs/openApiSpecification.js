@@ -6,7 +6,7 @@ const ubicacion = dirname(fileURLToPath(import.meta.url))
 
 //crearSnippet
 const swaggerDefinition = {
-    openapi: '3.0.0',
+    openapi: '3.0.1',
     info: {
         titlle:'DIET-ASSIST-API',
         version:'1.0.0'
@@ -15,15 +15,16 @@ const swaggerDefinition = {
         {url:`https://localhost:3000`}
     ],
     components:{
-        secutitySchemes:{
+        securitySchemes:{
             bearerAuth:{
-                type:"https",
+                type:"http",
+                description: "JWT in Authorization Headers with Bearer. Payloads includes: username",
+                name:"Authorization",
+                in: "header",
                 scheme:"bearer",
-                descprition: "JWT in Authorization Headers with Bearer. Payloads includes: username"
+                bearerFormat: "JWT"
+                                
             }
-        },
-        schemas:{
-            
         }
     },
 }

@@ -8,14 +8,14 @@ export async function getPatients(req,res){
 
     try{
         
-        const {username} = req.body
+        const {username} = req
 
         const regex= new RegExp(username)
         console.log(regex)
     
         const data = await Patients.find(
             {_id:regex},
-            {_id:0,name:1,surname:1}
+            {_id:1,name:1,surname:1}
         ) 
 
         //setTimeout(()=>{res.status(200).send(data)},1500)

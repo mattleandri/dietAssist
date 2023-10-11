@@ -16,7 +16,7 @@ import { openApiSpecification } from './docs/openApiSpecification.js';
 
 //Routes
 import createPlanRouter from './routes/createPlan.js';
-import verPacientesRouter from './routes/verPacientes.js'
+import pacientesRouter from './routes/pacientes.js'
 import authRouter from './routes/auth.js';
 import serviciosRouter from './routes/servicios.js';
 import panelRouter from './routes/panel.js';
@@ -44,7 +44,7 @@ app.use("/auth",authRouter)
 app.use("/panel",panelRouter)
 app.use("/servicios",serviciosRouter)
 app.use("/createPlan",createPlanRouter)
-app.use("/verPacientes",verPacientesRouter)
+app.use("/verPacientes",pacientesRouter)
 
 
 

@@ -11,7 +11,7 @@ export async function getAlimentosByName(req = request,res){
     //let allAlimentos = []
 
     try{
-    
+        
         const {foodName} = req.query
 
         if(foodName.trim().length<2) return res.status(400).json({err:'Se requieren al menos dos caracteres para realizar la busqueda'})
@@ -23,7 +23,6 @@ export async function getAlimentosByName(req = request,res){
         allAlimentos.push(...verduras) 
 
         const reg = new RegExp(foodName.toLocaleLowerCase())
-        console.log(allAlimentos)
 
         const filtrado = allAlimentos.filter(alimento => alimento.name.toLocaleLowerCase().match(reg))  //leer mas de expresiones regulares. Metodos y diferencias
         //https://developer.mozilla.org/es/docs/Web/JavaScript/Guide/Regular_expressions
