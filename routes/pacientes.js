@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { getPatients } from "../controllers/pacientes.js";
+import { getPatients,newPatient,deletePatient } from "../controllers/pacientes.js";
 import validJWT from "../helpers/validJWT.js";
 
 const pacientesRouter = Router()
@@ -44,6 +44,8 @@ pacientesRouter.use(validJWT)
  * 
  *
  */
-pacientesRouter.get('/',getPatients)
+pacientesRouter.get('/getPatients',getPatients)
+pacientesRouter.post('/newPatient',newPatient)
+pacientesRouter.delete('/deletePatient',deletePatient)
 
 export default pacientesRouter
