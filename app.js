@@ -44,7 +44,7 @@ app.use("/auth",authRouter)
 app.use("/panel",panelRouter)
 app.use("/servicios",serviciosRouter)
 app.use("/createPlan",createPlanRouter)
-app.use("/verPacientes",pacientesRouter)
+app.use("/patients",pacientesRouter)
 
 
 
