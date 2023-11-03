@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 //import { plansSchema,userSchema,patientSchema } from "../schemas";
 
-import { plansSchema } from "../schemas/groups.js";
+import { daySchema, mealSchema, plansSchema } from "../schemas/groups.js";
 import { userSchema } from "../schemas/users.js";
 import { patientSchema } from "../schemas/patients.js";
 import { alimentoSchema } from "../schemas/alimentos.js";
@@ -19,6 +19,9 @@ import { alimentoSchema } from "../schemas/alimentos.js";
     dietAssistDB.model('plans',plansSchema)
     dietAssistDB.model('users',userSchema)
     dietAssistDB.model('patients', patientSchema)
+
+    dietAssistDB.model('days',daySchema)
+    dietAssistDB.model('meals',mealSchema)
     
     export const  alimentosDB = mongoose.createConnection(`mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@diet-assist-db.lskotyy.mongodb.net/Alimentos?retryWrites=true&w=majority`, {
         useNewUrlParser: true,
