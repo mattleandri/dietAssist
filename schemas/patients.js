@@ -4,7 +4,14 @@ const patientSchema = new Schema({
     _id:String,
     name:String,
     surname:String,
-    age: Number
+    dni:Number,
+    age: Number,
+    sex:String,
+    height:Number,
+    weight:Number,
+    sport:String,
+    ocupation:String,
+    goal:String
 })
 
 export {patientSchema}
