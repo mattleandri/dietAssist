@@ -29,7 +29,6 @@ const swaggerDefinition = {
     },
 }
 
-
 const options = {
     swaggerDefinition,
     apis: [`${join(ubicacion,'../routes/*.js')}`],

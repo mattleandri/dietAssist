@@ -1,6 +1,9 @@
 CONNECTION FROM SHELL
 mongosh "mongodb+srv://diet-assist-db.lskotyy.mongodb.net/" --apiVersion 1 --username mateolr20
 
+COMPASS
+mongodb+srv://mateolr20:<password>@diet-assist-db.lskotyy.mongodb.net/
+
 NODE 
 mongodb+srv://<username>:<password>@diet-assist-db.lskotyy.mongodb.net/?retryWrites=true&w=majority
 

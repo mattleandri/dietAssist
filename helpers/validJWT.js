@@ -6,7 +6,6 @@ export default function validJWT(req =request,res = response,next){
     try{
 
         const accesToken = (req.headers.authorization).split('Bearer ')[1]
-        console.log(accesToken)
         
         const validation = jwt.verify(accesToken,process.env.SECRET_TOKEN)
 

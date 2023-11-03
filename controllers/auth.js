@@ -26,8 +26,6 @@ export default async function logIn(req =request,res){
         if(user.length==0){
             return res.status(400).json('User/Password Incorrecta')  //400 is for bad request
         }
-
-        console.log(user)
     
         const auth =  await bcrypt.compare(password,user[0].password)
         if(auth == false) {
