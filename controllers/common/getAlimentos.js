@@ -27,6 +27,10 @@ export async function getAlimentosByName(req = request,res){
         const filtrado = allAlimentos.filter(alimento => alimento.name.toLocaleLowerCase().match(reg))  //leer mas de expresiones regulares. Metodos y diferencias
         //https://developer.mozilla.org/es/docs/Web/JavaScript/Guide/Regular_expressions
 
+
+        //TODO: Posiblemente haber almacenado decimal128 en la DB sea innecesario.
+        // El tipo de dato number ya deberia ser lo suficinteme  presico (64 bits en coma flotante de doble presicion)
+
         res.status(200).json(filtrado)
 
     }catch(err){
@@ -36,3 +40,29 @@ export async function getAlimentosByName(req = request,res){
    
 } 
 
+export const getAlimentosById = async (req,res) => {
+    
+    try{
+        const {foodId} = req.params
+        
+
+        const db = [Carbohidratos,Proteinas,Verduras]
+        let i=0 
+
+        let food
+        while(!food){
+            food = await db[i].findById(foodId) 
+            i++
+            if(i>2)break
+        }
+
+        if(!food) return res.status(404).json({msg:'Id no existente'})
+
+        res.status(200).json(food)
+
+    }catch(err){
+        console.log(err)
+        res.status(500).json(err)
+    }
+    
+}
