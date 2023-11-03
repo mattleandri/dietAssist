@@ -15,10 +15,8 @@ export async function getPatients(req,res){
     
         const data = await Patients.find(
             {_id:regex},
-            {_id:1,name:1,surname:1}
         ) 
 
-        //setTimeout(()=>{res.status(200).send(data)},1500)
         res.status(200).send(data)
 
     }catch(err){
@@ -26,3 +24,58 @@ export async function getPatients(req,res){
     }
    
 }
+
+export async function newPatient(req,res){
+
+    try{
+
+        const {name,surname,dni,sex,age,height,weight,sport,ocupation,goal} = req.body
+        const {username} = req
+
+        const result = await Patients.create(
+            {_id:`${username}@${dni}`,
+            name:name,
+            surname:surname,
+            dni:dni,
+            age:age,
+            sex:sex,
+            height:height,
+            weight:weight,
+            sport:sport,
+            ocupation,
+            goal:goal
+            }
+        )
+
+        console.log(result)
+        res.status(200).send(result)
+
+    }catch(err){
+        res.status(400).send(err)
+        console.log(err)
+    }
+
+}
+
+
+export async function deletePatient(req,res){
+
+    try{
+
+        const {patientId} = req.body
+        const {username} = req
+
+        const result = await Patients.deleteOne(
+            {_id:patientId}
+        )        
+        
+        console.log(result)
+        res.status(200).send(result)
+
+    }catch(err){
+        res.status(400).send(err)
+        console.log(err)
+    }
+
+}
+
