@@ -1,106 +1,92 @@
 import { Decimal128 } from "bson"
-//import { Plans } from "../schemas/.js"
-import mongoose, { mongo } from "mongoose"
+import mongoose, { model, mongo } from "mongoose"
 import { dietAssistDB } from "../DB/dbConnection.js"
+import { request } from "express"
+import { mealSchema,daySchema } from "../schemas/groups.js"
+import { getDayName } from "./helpers/days.js"
+import { getMealName } from "./helpers/meal.js"
 
 const Plans = dietAssistDB.model('plans')
+const Day = dietAssistDB.model('days')
+const Meal = dietAssistDB.model('meals')
 
-export function showCreatePlan(req,res) {
+export async function newPlan (req,res){
 
-    res.render('createPlan',{})
+    const {patientId,name,kcal,p,c,f,days,meals,description}=req.body
+    //const {username} = req.body //(from JWT middlware)
+    const planId = `${patientId}@${name}`
+    
+    console.log(req.body)
 
-}
+    const mealNames = getMealName(meals)
+    const mealsArray = getDefMeals({meals,mealNames,p,c,f,kcal})
+    //const dayName = getDayName(days,[])
 
-export async function createGroup (req,res){
+     let daysArray = []
+     for(let i = 0 ; i<days ; i++){
 
-    const {groupId,name,goal}=req.body
+        const newDay= new Day({
+            name:getDayName(i,[]),
+            goal:{p:p,c:c,f:f,kcal:kcal},
+            hola:'hola',
+            meals: mealsArray
+        })
+
+        daysArray.push(newDay)
+     }
+
+   
 
     try {
-        await Plans.create({    
-            _id: groupId, //"mattleandri@LucasLeandri42000000",
-            name: name,//"Mes1",
-            goal: goal //{p:180, c:200,f:80, kcal:2000}
-                
+        const result = await Plans.create({    
+            _id: planId, 
+            name: name,
+            goal: {kcal:kcal,p:p,c:c,f:f},
+            days: daysArray,
+            description:description,   
         })   
 
-        res.send("Creado con Exito")
+        console.log(result.name)
+
+        res.status(200).json({name:result.name})
     }
 
     catch(err)
-    {res.status(500).send("Error")}
+    {console.log(err) ;  res.status(500).send("Error")}
 
 }
 
-export async function newDay(req,res){
-
-    const {groupId,dayName}=req.body
-    const defaultGoal= await Plans.findById(groupId, {"_id":0, "goal":1}).exec() //by def goal is the same than al month goal. Apply projection 
-    console.log(defaultGoal.goal)
-   
-    try{
-        
-        const action = await Plans.updateOne(
-            {_id:groupId}, //filter
-            {$addToSet:{days:{  //data (adding a item to the array with push)
-                name:dayName,
-                //goal:defaultGoal No especifico el goal a menos que sea diferente al del group
-                meals:[]
-        }}})
-        
-        //console.log(action)
-        res.status(200).send(`Insersiones: ${action.modifiedCount>0 ?
-        'Realizado con exito':`No se han realizado insersiones. Ya existe el Dia "${dayName}"`}`)
-     
-    }
-
-    catch{res.status(500).send( "Something gone wrong...")}
-   
-    
-}
 
 //Adding meals according the distribiution seted (amount of meals is the important)
-export async function addDefMeals(req,res){
+export function getDefMeals({meals:amount,mealNames,p,c,f,kcal}){
+//TODO:agg poder recibir porcentaje especificado de distribucion
 
+    const percentage=100/amount
 
-  
-    const {groupId,dayName,mealsAmount}=req.body
-    let mealNames=[]
-    const percentage=100/mealsAmount
-
-    const defaultGoal = await Plans.findById(groupId, {"_id":0, "goal":1}).exec() //by def goal is the same than all month goal. Apply projection 
-
-   
-    
-    const meals=[]
+    let meals=[]
 
     const goal={
-        p:(defaultGoal.goal.p*percentage)/100,
-        c:(defaultGoal.goal.c*percentage)/100,
-        f:(defaultGoal.goal.f*percentage)/100,
-        kcal:(defaultGoal.goal.kcal*percentage)/100
+        p:p*(percentage/100),
+        c:c*(percentage/100),
+        f:f*(percentage/100),
+        kcal:kcal*(percentage/100)
     }
     
-    for(let i=0;i<mealsAmount;i++){
-        const meal = {
-            name:`Plato ${i+1}`,
-            percentage: percentage,
+    for(let i=0;i<amount;i++){
+        const meal = new Meal ({
+            name: mealNames[i],
+            percentage: 0,
             goal: goal,
-            foods:[]
-        } 
+            foods:[],
+            autoCalculate:false
+        }) 
         meals.push(meal)
 
     }
 
-    try{
-        const action = await Plans.updateOne(
-            {$and:[{_id:groupId},{"days.name":dayName}]}, //filter
-            {$addToSet:{"days.$.meals":meals}} //update
-            )
-
-            res.status(200).send("Todo Bien" + "\n" + JSON.stringify(action))
-    }
-    catch(error){res.status(500).send("Something worng..." + error)}
     
+    
+    return meals
 }
 
 
@@ -152,4 +138,405 @@ export async function setDistribution (req,res){
 
 }
 
-//TO DO newMeal()   for if we want to add just 1 meal 
+
+//TODO: Agregar que la id sea leida de query Params
+export async function getPlan(req,res){
+
+    const {planId} = req.params
+
+    try{
+        const result = await Plans.findById(planId)
+
+        
+        res.status(200).json(result)
+    }catch(err){
+        res.status(500).json(err)
+    }
+   
+}
+
+export async function getPlansNames (req = request,res){
+
+    try{    
+       
+        const {patientId} = req.params
+
+        const reg = new RegExp(patientId)
+
+        const planes = await Plans.find({_id:reg},{_id:0,name:1})
+
+        res.status(200).json(planes)
+
+    }catch(err){
+        res.send(500).json(err)
+    }
+
+}
+
+export async function getDay (req,res){
+
+    try{
+        const {planId,dayName} = req.params
+
+        const dayPlan = await Plans.find(
+        {_id:planId,'days.name':dayName},
+        {_id:0,'days.$':1})
+
+        const dayData = dayPlan[0].days[0]
+
+        res.status(200).json(dayData)
+
+    }catch(err){
+
+        res.status(500).json(err)
+        
+    }
+
+}
+
+export async function getFoodsList(req,res){
+
+
+    try{
+        const {planId,dayName,mealName} = req.params
+
+        const result = await Plans.findOne(
+            {
+                _id: planId,
+                'days.name': dayName,
+                'days.meals.name': mealName,
+            },
+            {
+                _id: 0,
+                'days.$': 1,
+            }
+        );
+
+        const foods = result.days.find(day => day.name == dayName)
+        .meals.find(meal => meal.name == mealName).foods
+
+        res.status(200).json(foods)
+
+    }catch(err){
+
+        res.status(500).json(err.message)
+        
+    }
+
+}
+
+//PUTS
+
+export async function updateFoodsList(req,res){
+    try{
+        
+        const {planId,dayName,mealName} = req.params
+        const foods = req.body
+
+            
+        const result = await Plans.updateOne(
+            {
+                _id: planId,
+                'days.name': dayName,
+                'days.meals.name': mealName,
+            },
+            {
+                $set: { 'days.$.meals.$[meal].foods': Object.keys(foods).length != 0?foods:[] },
+            },
+            {
+                arrayFilters: [{ 'meal.name': mealName }],
+            }
+            );
+            
+            if (result.modifiedCount === 1) {
+            console.log('Comida insertada correctamente.');
+            } else {
+            //throw new Error('No se realizo la insersion')
+            }
+
+
+
+        res.status(200).json({})
+
+    }catch(err){
+        console.log(err)
+        res.status(500).json(err)
+    }
+}
+
+export async function updateMealGoal (req,res){
+
+    try{
+
+        const {planId,dayName,mealName} = req.params
+        const goals = req.body
+
+        const result = await Plans.updateOne(
+            {
+              _id: planId,
+              'days.meals.name': mealName
+            },
+            {
+              $set: {
+                'days.$[day].meals.$[meal].goal': goals
+              }
+            },
+            {
+              arrayFilters: [
+                { 'day.name':  dayName },  // Nombre del día que contiene el 'meal' a actualizar
+                { 'meal.name': mealName } // Nombre del 'meal' que quieres actualizar
+              ]
+            }
+        );
+
+        if(result.modifiedCount!=1) return res.status(404).json('No se modifico ningun Goal. Verifique los datos enviados')
+
+        res.status(200).json({})
+
+    }catch(err){
+        console.log(err)
+        res.status(500).json(err)
+    }
+
+}
+
+export async function addDay(req,res){
+
+    try{
+        const {planId} = req.params
+        
+        const data = await Plans.findById(
+            {_id:planId},
+            {_id:0,days:1,goal:1}
+        )
+
+        const dayAmount = parseFloat(data.days.length)
+        const diasExistentes = data.days.map(day=>day.name)
+
+        const dayName = getDayName(dayAmount,diasExistentes)
+
+        const mealGoal = {
+            p:data.goal.p/4,
+            c:data.goal.c/4,
+            f:data.goal.f/4,
+            kcal:data.goal.kcal/4
+        }
+
+        const newDay = { 
+            name: dayName,
+            goal:data.goal,
+            meals : [
+                {name:'Desayuno' , goal: mealGoal},
+                {name:'Almuerzo' , goal: mealGoal},
+                {name:'Merienda' , goal: mealGoal},
+                {name:'Cena' ,  goal: mealGoal}
+            ]
+        }
+
+        const result = await Plans.updateOne(
+            {_id:planId},
+            {
+                $addToSet: {days: newDay }
+            }
+        )
+
+        res.status(200).json(newDay)
+
+    }catch(err){
+        console.log(err)
+        res.status(500).json(err)
+    
+    }
+}
+
+export async function setDayName(req,res){
+
+    try{
+        const {planId,dayName} = req.params
+        const {newDayName} = req.body
+
+        const result = await Plans.updateOne(
+            {
+              _id: planId,
+              'days.name': dayName,
+            },
+            {
+              $set: {
+                'days.$[day].name': newDayName
+              }
+            },
+            {
+              arrayFilters: [
+                { 'day.name': dayName },
+              ]
+            }
+          );
+
+
+        res.status(200).json({ok:'Modificado'})
+
+    }catch(err){
+        console.log(err)
+        res.status(500).json(err)
+    
+    }
+
+}
+
+//TODO: Agg Middleware que verifique la no existencia 
+export async function updateMealName(req,res){
+
+    try{
+        const {planId,dayName,mealName} = req.params
+        const {newMealName} = req.body
+
+        const result = await Plans.updateOne(
+            {
+              _id: planId,
+              'days.name': dayName,
+              'days.meals.name': mealName
+            },
+            {
+              $set: {
+                'days.$[day].meals.$[meal].name': newMealName
+              }
+            },
+            {
+              arrayFilters: [
+                { 'day.name': dayName },
+                { 'meal.name': mealName }
+              ]
+            }
+          );
+
+
+        res.status(200).json({ok:'Modificado'})
+
+    }catch(err){
+        console.log(err)
+        res.status(500).json(err)
+    
+    }
+
+}
+
+//TODO: Aprender a hacer querys mas especificos. Arrays. Aprender a usar Aggregation
+export async function addMeal(req,res){
+
+    try{
+        const {planId,dayName} = req.params
+        const {mealNameClicked} = req.body
+        console.log(mealNameClicked)
+        
+        const data = await Plans.find(
+            {_id:planId , 'days.name': dayName },
+            {_id:0,'days.$':1 }
+        )
+
+        let pos = data[0].days[0].meals.findIndex( meal =>
+            ( meal.name == mealNameClicked)
+        )
+
+        if(pos == -1) throw new Error('Dia no encontrado...')
+        
+        pos+=1
+
+        const mealName = `Plato${data[0].days[0].meals.length + 1}`
+        const newMeal = {
+            name: mealName,
+            percentage:0,
+            goal: {p:0,c:0,f:0,kcal:0},
+            foods:[],
+            autoCalculate:false
+        }
+
+        const response = await Plans.updateOne(
+            {_id:planId},
+            {
+                $push:{
+                    [`days.$[day].meals`]: {
+                        $each:[newMeal],
+                        $position: pos 
+                    }
+                }
+            },
+            {
+                arrayFilters: [
+                  { 'day.name': dayName },
+                  //{ 'meal.name': mealNameClicked }
+                ]
+            }
+        )
+
+        console.log(newMeal)
+        res.status(200).json({newMeal,pos})
+
+    }catch(err){
+        console.log(err)
+        res.status(500).json(err)
+    
+    }
+
+}
+
+
+//DELETES
+
+export async function deleteMeal(req,res){
+
+    try{
+
+        const {planId,dayName,mealName} = req.params
+       
+        const result = await Plans.updateOne(
+            {_id:planId},
+            {
+                $pull:{'days.$[day].meals':{name:mealName}}
+            },
+            {
+                arrayFilters:[
+                    {'day.name':dayName}
+                ]
+                
+            }
+            )
+        
+        if(result.modifiedCount!=1) return res.status(404).json({err:'Plato no Encontrado'})
+       
+
+        res.status(200).json({result})
+
+    }catch(err){
+        console.log(err)
+        res.status(500).json(err)
+    
+    }
+
+
+}
+
+export async function deleteDay(req,res){
+
+    try{
+
+        const {planId,dayName} = req.params
+       
+        const result = await Plans.updateOne(
+            {_id:planId},
+            {
+                $pull:{'days':{name:dayName}}
+            }
+            )
+        
+        if(result.modifiedCount!=1) return res.status(404).json({err:'Dia no Encontrado'})
+       
+
+        res.status(200).json(result)
+
+    }catch(err){
+        console.log(err)
+        res.status(500).json(err)
+    
+    }
+
+}
