@@ -11,7 +11,7 @@ import { alimentoSchema } from "../schemas/alimentos.js";
 
     console.log('Entro a fn DB')
 
-    export const dietAssistDB =  mongoose.createConnection(`mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@diet-assist-db.lskotyy.mongodb.net/dietAssist?retryWrites=true&w=majority`, {
+    export const dietAssistDB =  mongoose.createConnection(`mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@diet-assist-db.lskotyy.mongodb.net/dietAssist?retryWrites=true&w=majority&ssl=true`, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
     })
@@ -23,7 +23,7 @@ import { alimentoSchema } from "../schemas/alimentos.js";
     dietAssistDB.model('days',daySchema)
     dietAssistDB.model('meals',mealSchema)
     
-    export const  alimentosDB = mongoose.createConnection(`mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@diet-assist-db.lskotyy.mongodb.net/Alimentos?retryWrites=true&w=majority`, {
+    export const  alimentosDB = mongoose.createConnection(`mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@diet-assist-db.lskotyy.mongodb.net/Alimentos?retryWrites=true&w=majority&ssl=true`, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
     })
