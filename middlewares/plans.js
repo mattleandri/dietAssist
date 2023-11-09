@@ -74,3 +74,18 @@ export const checkMealName = async (req,res,next) =>{
     }
 
 }
+
+export const checkPlanName = async (req,res,next) =>{
+
+    const {patientId,name} = req.body
+    //TODO: Add express Validator & restriction in Front
+    const planId = `${patientId}@${name}`
+
+    const result  = await Plans.findOne({_id:planId})
+    console.log(result)
+    if(result) return res.status(400).json({err:'Name Plan already exists'})
+
+    req.planId = planId
+    next()
+
+}
