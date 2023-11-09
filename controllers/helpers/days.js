@@ -14,6 +14,7 @@ export const getDayName = (amount,diasExistentes) =>{
         if (!diasExistentes.includes(`Dia${amount + 1}`)) {
             return `Dia${amount + 1}`;
         }
+        else return addLetterToName (amount,diasExistentes)
     }
 
 }
