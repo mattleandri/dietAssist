@@ -10,7 +10,7 @@ import { dietAssistDB } from '../DB/dbConnection.js'
 //Posiblemente muchas cosas puedan hacerse tmb desde el front para ni enviar el fetch.
 
 const Users = dietAssistDB.model('users')
-export default async function logIn(req =request,res){
+export async function logIn(req =request,res){
 
     //const 
 
@@ -24,12 +24,12 @@ export default async function logIn(req =request,res){
         })
         
         if(user.length==0){
-            return res.status(400).json('User/Password Incorrecta')  //400 is for bad request
+            return res.status(401).json('User/Password Incorrecta') 
         }
     
         const auth =  await bcrypt.compare(password,user[0].password)
         if(auth == false) {
-            return res.status(401).json('User/Password Incorrecta') // or 401? Unauthorized
+            return res.status(401).json('User/Password Incorrecta') // 400 is for bad request / 401 Unauthorized
         }
         
         const token = createJWT(username)
@@ -38,9 +38,30 @@ export default async function logIn(req =request,res){
 
     }catch(err){
         res.status(500).json({err:err})       //500 becasuse it will only works is somenthing gone wrong creating JWT
-                                        // For pass or user wrong we have individual problem manage...bad practice?
-
+                                            
     }
     
+
+}
+
+//TODO: Add restrictions to password
+export async function signUp(req,res){
+
+    const {username,password} = req.body
+    console.log(password)
+
+    try{
+
+        const salt = bcrypt.genSaltSync(10)
+        const hashedPass = bcrypt.hashSync(password,salt)
+        console.log(hashedPass)
+
+        const result = await Users.create({username:username,password:hashedPass})
+        res.status(200).json({msj:'ok'})
+
+    }catch(err) {
+        console.log(err)
+        res.status(500).json({err:err})
+    }
 
 }
