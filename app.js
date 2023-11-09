@@ -9,8 +9,6 @@ import cors from 'cors';
 import swaggerUi from 'swagger-ui-express'
 
 
-
-
 //Doc
 import { openApiSpecification } from './docs/openApiSpecification.js';
 
@@ -43,7 +41,7 @@ app.use("/api-doc",swaggerUi.serve,swaggerUi.setup(openApiSpecification))
 app.use("/auth",authRouter)
 app.use("/panel",panelRouter)
 app.use("/servicios",serviciosRouter)
-app.use("/createPlan",createPlanRouter)
+app.use("/createPlan",createPlanRouter) //TODO: Rename to '/plan'
 app.use("/patients",pacientesRouter)
 
 
@@ -69,3 +67,4 @@ async function main() {
 }
 
  main()
+ export {app}
