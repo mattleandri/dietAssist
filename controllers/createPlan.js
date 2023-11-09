@@ -14,7 +14,7 @@ export async function newPlan (req,res){
 
     const {patientId,name,kcal,p,c,f,days,meals,description}=req.body
     //const {username} = req.body //(from JWT middlware)
-    const planId = `${patientId}@${name}`
+    const planId = req.planId
     
     console.log(req.body)
 
@@ -146,8 +146,6 @@ export async function getPlan(req,res){
 
     try{
         const result = await Plans.findById(planId)
-
-        
         res.status(200).json(result)
     }catch(err){
         res.status(500).json(err)
@@ -312,7 +310,7 @@ export async function addDay(req,res){
 
         const dayAmount = parseFloat(data.days.length)
         const diasExistentes = data.days.map(day=>day.name)
-
+        console.log(dayAmount,diasExistentes)
         const dayName = getDayName(dayAmount,diasExistentes)
 
         const mealGoal = {
