@@ -2,7 +2,7 @@ import { getAlimentosById, getAlimentosByName } from '../controllers/common/getA
 import {newPlan,getPlan ,
     getPlansNames,getDay, updateFoodsList,getFoodsList,updateMealGoal, addDay,updateMealName,addMeal,
     deleteMeal,deleteDay,setDayName} from '../controllers/createPlan.js'
-import { checkDayName, checkMealName } from '../middlewares/plans.js'
+import { checkDayName, checkMealName , checkPlanName } from '../middlewares/plans.js'
 
 import express from 'express'
 
@@ -11,12 +11,14 @@ const createPlanRouter=express.Router()
 //TODO: Rename this route to Plan
 //TODO: Agg Middleware con .use de checkJWT.... Por lo tanto agg en el front el envio del token en todas las solicitudes
 
-createPlanRouter.post('/newPlan',newPlan)  // Posiblemente solo me quede con New Plan que creara de ser necesario el Group
+//plan
+createPlanRouter.post('/newPlan',checkPlanName,newPlan) // Tested // Posiblemente solo me quede con New Plan que creara de ser necesario el Group
+createPlanRouter.get('/getPlan/:planId',getPlan)    //Tested
+createPlanRouter.get('/getPlansNames/:patientId',getPlansNames)
 //createPlanRouter.post('/addDefMeals',addDefMeals)
 //createPlanRouter.post('/setDistribution',setDistribution)
 
-createPlanRouter.get('/getPlansNames/:patientId',getPlansNames)
-createPlanRouter.get('/getPlan/:planId',getPlan)
+
 createPlanRouter.get('/getPlan/:planId/:dayName',getDay)
 
 //days
