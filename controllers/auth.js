@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken'
 import { request } from 'express'
 import createJWT from '../helpers/createJWT.js'
 import { dietAssistDB } from '../DB/dbConnection.js'
+import { createExPatient } from '../helpers/createExPatient.js'
 // pass:test12345
 
 //Falta agg validaciones como campos vacio, ignorar espacio de la derehca de user, etc
@@ -40,23 +41,24 @@ export async function logIn(req =request,res){
         res.status(500).json({err:err})       //500 becasuse it will only works is somenthing gone wrong creating JWT
                                             
     }
-    
 
 }
 
 //TODO: Add restrictions to password
 export async function signUp(req,res){
 
-    const {username,password} = req.body
+    const {username,password,name,surname} = req.body
     console.log(password)
 
     try{
 
         const salt = bcrypt.genSaltSync(10)
         const hashedPass = bcrypt.hashSync(password,salt)
-        console.log(hashedPass)
 
-        const result = await Users.create({username:username,password:hashedPass})
+        //TODO: make it Transaction 
+
+        const result = await Users.create({username:username,password:hashedPass,name:name,surname:surname})
+        createExPatient(username)
         res.status(200).json({msj:'ok'})
 
     }catch(err) {
