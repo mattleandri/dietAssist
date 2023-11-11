@@ -1,5 +1,5 @@
 import { Router } from "express"
-import validJWT from "../helpers/validJWT.js"
+import validJWT from "../middlewares/validJWT.js"
 import { getPanel } from "../controllers/panel.js"
 
 
