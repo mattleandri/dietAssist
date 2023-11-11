@@ -1,3 +1,6 @@
+import { dietAssistDB } from "../../DB/dbConnection.js"
+
+
 export const getMealName = (amount) =>{
 
     const basicNames = ['Desayuno','Almuerzo','Merienda','Cena']
@@ -36,3 +39,39 @@ export const getMealName = (amount) =>{
     }
 
 }
+
+
+//Adding meals according the distribiution seted (amount of meals is the important)
+export function getDefMeals({meals:amount,mealNames,p,c,f,kcal}){
+    //TODO:agg poder recibir porcentaje especificado de distribucion
+
+        const Meal = dietAssistDB.model('meals')
+    
+        const percentage=100/amount
+    
+        let meals=[]
+    
+        const goal={
+            p:p*(percentage/100),
+            c:c*(percentage/100),
+            f:f*(percentage/100),
+            kcal:kcal*(percentage/100)
+        }
+        
+        for(let i=0;i<amount;i++){
+            const meal = new Meal ({
+                name: mealNames[i],
+                percentage: 0,
+                goal: goal,
+                foods:[],
+                autoCalculate:false
+            }) 
+            meals.push(meal)
+    
+        }
+    
+        
+        
+        return meals
+    }
+    
