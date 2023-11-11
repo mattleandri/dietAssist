@@ -21,7 +21,7 @@ import panelRouter from './routes/panel.js';
 
 
 //Helpers
-import validJWT from './helpers/validJWT.js';
+import validJWT from './middlewares/validJWT.js';
 
 const app = express()
 const PORT = process.env.PORT || 3000;
@@ -39,10 +39,10 @@ app.use("/api-doc",swaggerUi.serve,swaggerUi.setup(openApiSpecification))
 
 
 app.use("/auth",authRouter)
-app.use("/panel",panelRouter)
-app.use("/servicios",serviciosRouter)
-app.use("/createPlan",createPlanRouter) //TODO: Rename to '/plan'
-app.use("/patients",pacientesRouter)
+app.use("/panel",validJWT,panelRouter)
+app.use("/servicios",validJWT,serviciosRouter)
+app.use("/createPlan",validJWT,createPlanRouter) //TODO: Rename to '/plan'
+app.use("/patients",validJWT,pacientesRouter)
 
 
 
