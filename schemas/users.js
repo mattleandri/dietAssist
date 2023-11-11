@@ -2,7 +2,10 @@ import {Schema, model} from "mongoose"
 
 const userSchema = new Schema({
     username:String,
-    password:String
+    password:String,
+    name:String,
+    surname:String,
+    //age,born,dni... etc
 })
 
 export {userSchema}
