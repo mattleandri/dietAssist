@@ -12,7 +12,7 @@ const Meal = dietAssistDB.model('meals')
 
 export async function newPlan (req,res){
 
-    const {patientId,name,kcal,p,c,f,days,meals,description}=req.body
+    const {patientId,name,kcal,p,c,f,meals,description}=req.body
     //const {username} = req.body //(from JWT middlware)
     const planId = req.planId
     
@@ -23,7 +23,7 @@ export async function newPlan (req,res){
     //const dayName = getDayName(days,[])
 
      let daysArray = []
-     for(let i = 0 ; i<days ; i++){
+     for(let i = 0 ; i<5 ; i++){
 
         const newDay= new Day({
             name:getDayName(i,[]),
@@ -144,6 +144,8 @@ export async function getDay (req,res){
 
     try{
         const {planId,dayName} = req.params
+
+        console.log(req.params)
 
         const dayPlan = await Plans.find(
         {_id:planId,'days.name':dayName},
